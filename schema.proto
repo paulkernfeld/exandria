@@ -1,0 +1,5 @@
+message AddFile {
+  string extension = 1;
+  bytes hash = 2;
+  string name = 3;
+}

@@ -1,0 +1,16 @@
+{
+  "networkName": "testnet",
+  "burnAddress": "mvExandriaXXXXXXXXXXXXXXXXXXZweqAX",
+  "opReturnPrefix": "d3bc",
+  "checkpoint": {
+    "height": 721728,
+    "header": {
+      "version": 4,
+      "prevHash": "0000000000002ea641b2975935bd9caf337b51ac9f9bb90a54f6ea6ee5d3112b",
+      "merkleRoot": "aaf4848e51a666960faa98c47202bf5be6773b64623a813823b14da802403f44",
+      "timestamp": 1456579362,
+      "bits": 437914591,
+      "nonce": 3740792649
+    }
+  }
+}

@@ -1,0 +1,5 @@
+*.nest/
+client-config.json
+files/
+node_modules
+secret.json
