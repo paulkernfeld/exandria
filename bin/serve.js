@@ -22,7 +22,13 @@ var metaFeed = core.createFeed({
 utils.joinFeedSwarm(metaFeed)
 
 var filesPath = path.join(utils.getDbPath(argv.db), 'files')
+if (!fs.existsSync(filesPath)) {
+  fs.mkdirSync(filesPath)
+}
 var paths = fs.readdirSync(filesPath)
+if (!paths) {
+  console.log('Warning: no files found')
+}
 paths.forEach(function (filePath) {
   var fileFeed = utils.getFileFeed(core, filesPath, filePath, {writable: false})
   fileFeed.get(0, function (err, block) {
