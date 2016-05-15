@@ -21,6 +21,7 @@
     "url": "git+https://github.com/paulkernfeld/exandria.git"
   },
   "scripts": {
+    "start": "node bin/serve.js",
     "test": "standard"
   },
   "dependencies": {
