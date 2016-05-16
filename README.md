@@ -16,7 +16,7 @@ From the project directory:
 
 How to write
 ------------
-1. According to the [burn-stream-writer](https://github.com/paulkernfeld/burn-stream-writer docs), set up Bitcoin and make a `client-config.json` file.
+1. According to the [burn-stream-writer docs](https://github.com/paulkernfeld/burn-stream-writer), set up Bitcoin and make a `client-config.json` file.
 2. Write your identity to the Bitcoin blockchain with `bin/write-identity`.
 3. Add some files using `bin/append`.
 4. Run `bin/serve` to share your local files with the world.
