@@ -4,6 +4,7 @@ var assert = require('assert')
 var fs = require('fs')
 var path = require('path')
 
+var debug = require('debug')('exandria')
 var hypercore = require('hypercore')
 var argv = require('minimist')(process.argv.slice(2))
 var sprintf = require('sprintf-js').sprintf
@@ -31,12 +32,14 @@ setStream.on('synced', function () {
   fileFeed.get(0, function (err, block) {
     assert.ifError(err)
     assert(block)
+    debug('got file', fullName)
 
     if (!fs.existsSync('./files')) {
       fs.mkdirSync('./files')
     }
     var linkPath = path.join('./files', fullName)
     if (fs.existsSync(linkPath)) {
+      debug('replacing existing file', linkPath)
       fs.unlinkSync(linkPath)
     }
     fs.symlinkSync(path.join('..', filesPath, keyHex), linkPath)
