@@ -9,7 +9,7 @@ var utils = require('../lib/utils')
 
 var nest = NestLevels(utils.getDbPath(argv.db))
 var setStream = set.SetStream(nest)
-setStream.on('synced', function () {
+setStream.once('synced', function () {
   for (var fullName in setStream.files) {
     debug('file', fullName, setStream.files[fullName])
     console.log(fullName)
