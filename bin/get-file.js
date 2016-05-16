@@ -22,7 +22,7 @@ assert.equal(argv._.length, 1)
 var fullName = argv._[0]
 
 var setStream = set.SetStream(nest)
-setStream.on('synced', function () {
+setStream.once('synced', function () {
   var fileInfo = setStream.files[fullName]
   assert(fileInfo, sprintf('File named "%s" not found', fullName))
 
