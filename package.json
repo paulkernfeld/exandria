@@ -27,7 +27,6 @@
   "dependencies": {
     "burn-stream": "^0.3.0",
     "burn-stream-writer": "^0.2.1",
-    "burnie": "^0.4.2",
     "debug": "^2.2.0",
     "electron-webrtc": "^0.2.4",
     "hypercore": "^2.3.0",
