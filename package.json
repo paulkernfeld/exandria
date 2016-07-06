@@ -25,7 +25,7 @@
     "test": "standard"
   },
   "dependencies": {
-    "burn-stream": "^0.4.0",
+    "burn-stream": "^0.5.0",
     "burn-stream-writer": "^0.2.1",
     "debug": "^2.2.0",
     "discovery-swarm": "^4.0.1",
