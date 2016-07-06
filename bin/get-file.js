@@ -24,27 +24,28 @@ var match = argv._[0] || '*'
 var setStream = set.SetStream(nest)
 setStream.once('synced', function () {
   var toGet = {}
-  setStream.files.forEach(function (fullName, fileInfo) {
+  for (var fullName in setStream.files) {
     if (minimatch(fullName, match, {nocase: true})) {
-      toGet[fullName] = fileInfo
+      toGet[fullName] = setStream.files[fullName]
     }
-  })
+  }
 
   assert(Object.keys(toGet).length > 0, sprintf('No files matched "%s"', match))
 
-  toGet.forEach(function (fullName, fileInfo) {
+  for (var fullNameGet in toGet) {
+    var fileInfo = toGet[fullNameGet]
     var keyHex = fileInfo.hash.toString('hex')
     var fileFeed = utils.getFileFeed(core, filesPath, keyHex)
     utils.joinFeedSwarm(fileFeed)
     fileFeed.get(0, function (err, block) {
       assert.ifError(err)
       assert(block)
-      debug('got file', fullName)
+      debug('got file', fullNameGet)
 
       if (!fs.existsSync('./files')) {
         fs.mkdirSync('./files')
       }
-      var linkPath = path.join('./files', fullName)
+      var linkPath = path.join('./files', fullNameGet)
       if (fs.existsSync(linkPath)) {
         debug('replacing existing file', linkPath)
         fs.unlinkSync(linkPath)
@@ -52,7 +53,7 @@ setStream.once('synced', function () {
       fs.symlinkSync(path.join('..', filesPath, keyHex), linkPath)
       process.exit(0)
     })
-  })
+  }
 })
 
 setStream.start()
