@@ -40,7 +40,8 @@
     "random-access-file": "^1.2.0",
     "sodium-signatures": "^1.2.2",
     "sprintf-js": "^1.0.3",
-    "subleveldown": "^2.1.0"
+    "subleveldown": "^2.1.0",
+    "through2": "^2.0.1"
   },
   "devDependencies": {
     "standard": "^7.0.1"
