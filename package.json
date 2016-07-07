@@ -27,6 +27,7 @@
   "dependencies": {
     "burn-stream": "^0.5.0",
     "burn-stream-writer": "^0.2.1",
+    "deasync": "^0.1.7",
     "debug": "^2.2.0",
     "discovery-swarm": "^4.0.1",
     "hypercore": "^2.3.0",
