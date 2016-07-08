@@ -2,10 +2,9 @@
 
 var assert = require('assert')
 var fs = require('fs')
-var path = require('path')
 
-var deasync = require('deasync')
 var hypercore = require('hypercore')
+var hyperdrive = require('hyperdrive')
 var argv = require('minimist')(process.argv.slice(2))
 
 var NestLevels = require('../lib/nest-levels')
@@ -14,33 +13,28 @@ var utils = require('../lib/utils')
 var nest = NestLevels(utils.getDbPath(argv.db))
 
 var core = hypercore(nest.db('hypercore'))
+var drive = hyperdrive(nest.db('hyperdrive'))
 
-var feeds = {}
-var filesPath = path.join(utils.getDbPath(argv.db), 'files')
-if (!fs.existsSync(filesPath)) {
-  fs.mkdirSync(filesPath)
+var swarms = {}
+
+var archivesDir = utils.getArchivesDirPath(argv.db)
+if (!fs.existsSync(archivesDir)) {
+  fs.mkdirSync(archivesDir)
 }
-var paths = fs.readdirSync(filesPath)
+// TODO: look inside hyperdrive's hypercore, not on the fs, perhaps
+var paths = fs.readdirSync(archivesDir)
 if (!paths) {
-  console.log('Warning: no files found')
+  console.log('Warning: no archives found')
 }
-paths.forEach(function (filePath) {
-  var fileFeed = utils.getFileFeed(core, filesPath, filePath, {writable: false})
-  var block = deasync(fileFeed.get).call(fileFeed, 0)
-  assert(block)
-  feeds[filePath] = fileFeed
-  utils.joinFeedSwarm(fileFeed)
+paths.forEach(function (archivePath) {
+  var archive = utils.getArchive(drive, archivesDir, Buffer(archivePath, 'hex'))
+  utils.joinSwarm(archive, swarms)
 })
 
 core.list(function (err, feedKeys) {
   assert.ifError(err)
   feedKeys.forEach(function (feedKey) {
-    var feedKeyHex = feedKey.toString('hex')
-    if (feeds[feedKeyHex]) {
-      // This is a file feed, and we already joined its swarm above
-      return
-    }
-    var feed = core.createFeed({key: Buffer(feedKeyHex, 'hex')})
-    utils.joinFeedSwarm(feed)
+    var feed = core.createFeed({key: feedKey})
+    utils.joinSwarm(feed, swarms)
   })
 })

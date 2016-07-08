@@ -3,3 +3,8 @@ message AddFile {
   bytes hash = 2;
   string name = 3;
 }
+
+message AddArchive {
+  string name = 1;
+  bytes hash = 2;
+}

@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 
-var assert = require('assert')
 var fs = require('fs')
 var path = require('path')
 
+var async = require('async')
 var argv = require('minimist')(process.argv.slice(2))
 var deasync = require('deasync')
+var glob = require('glob')
 var hypercore = require('hypercore')
-var memdb = require('memdb')
+var hyperdrive = require('hyperdrive')
 var prompt = require('prompt')
 var raf = require('random-access-file')
+var temp = require('temp').track()
+// TODO: remove temp dir
 
 var messages = require('../lib/messages')
 var NestLevels = require('../lib/nest-levels')
@@ -19,31 +22,39 @@ var nest = NestLevels(utils.getDbPath(argv.db))
 
 var keypair = utils.getKeypair()
 var core = hypercore(nest.db('hypercore'))
+var drive = hyperdrive(nest.db('hyperdrive'))
 
 var metaFeed = core.createFeed({
   key: keypair.publicKey,
   secretKey: keypair.secretKey
 })
 
-assert(argv._.length)
-var files = []
-argv._.forEach(function (filePath) {
-  var content = fs.readFileSync(filePath)
+var files = glob.sync(argv.path)
+var archiveName = argv.name || argv.path
+console.log('files:', files)
 
-  var fileFeed = hypercore(memdb()).createFeed({live: false})
-  deasync(fileFeed.append).call(fileFeed, content)
-  deasync(fileFeed.finalize).call(fileFeed)
+// Make the new archive in a temp directory
+var tmpDirPath = temp.mkdirSync()
+var archive = drive.createArchive({live: false, file: function (name) {
+  return raf(path.join(tmpDirPath, name))
+}})
 
-  var ext = path.extname(filePath)
-  var file = {
-    path: filePath,
-    name: path.basename(filePath, ext),
-    extension: ext.slice(1),
-    hash: fileFeed.key
-  }
-  files.push(file)
-  console.log(file)
+// Add all matching files into the archive
+deasync(async.map)(files, function (filePath, cb) {
+  var ws = archive.createFileWriteStream(filePath)
+  fs.createReadStream(filePath).pipe(ws)
+  ws.on('end', cb)
 })
+
+// Compute the content hash of the archive
+deasync(archive.finalize).call(archive)
+var link = archive.key.toString('hex')
+
+var addArchive = {
+  name: archiveName,
+  hash: archive.key
+}
+console.log(addArchive)
 
 var result = deasync(prompt.get)(['write'])
 if (result.write !== 'y') {
@@ -51,24 +62,20 @@ if (result.write !== 'y') {
   process.exit(1)
 }
 
-var filesDir = path.join(utils.getDbPath(argv.db), 'files')
-if (!fs.existsSync(filesDir)) {
-  fs.mkdirSync(filesDir)
+// Move the archive from the temp folder into a folder named w/ the content hash
+// of the archive.
+var archivesDir = utils.getArchivesDirPath(argv.db)
+if (!fs.existsSync(archivesDir)) {
+  fs.mkdirSync(archivesDir)
 }
-files.forEach(function (file) {
-  var dest = path.join(filesDir, file.hash.toString('hex'))
 
-  // Make an individual feed for this file
-  var content = fs.readFileSync(file.path)
-  var fileFeed = core.createFeed({
-    live: false,
-    storage: raf(dest)
-  })
-  deasync(fileFeed.append).call(fileFeed, content)
-  deasync(fileFeed.finalize).call(fileFeed)
-  assert(fileFeed.key)
+var archivePath = path.join(archivesDir, link.toString('hex'))
+if (fs.existsSync(archivePath)) {
+  console.log('archive path already exists')
+  process.exit(1)
+}
+fs.renameSync(tmpDirPath, archivePath)
 
-  // Save the file's metadata into the main feed
-  var toWrite = messages.AddFile.encode(file)
-  deasync(metaFeed.append).call(metaFeed, toWrite)
-})
+// Save the archive's metadata into the main feed
+var toWrite = Buffer.concat([Buffer([2]), messages.AddArchive.encode(addArchive)])
+deasync(metaFeed.append).call(metaFeed, toWrite)
