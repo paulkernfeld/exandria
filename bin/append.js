@@ -65,9 +65,6 @@ if (result.write !== 'y') {
 // Move the archive from the temp folder into a folder named w/ the content hash
 // of the archive.
 var archivesDir = utils.getArchivesDirPath(argv.db)
-if (!fs.existsSync(archivesDir)) {
-  fs.mkdirSync(archivesDir)
-}
 
 var archivePath = path.join(archivesDir, link.toString('hex'))
 if (fs.existsSync(archivePath)) {

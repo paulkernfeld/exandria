@@ -18,9 +18,6 @@ var drive = hyperdrive(nest.db('hyperdrive'))
 var swarms = {}
 
 var archivesDir = utils.getArchivesDirPath(argv.db)
-if (!fs.existsSync(archivesDir)) {
-  fs.mkdirSync(archivesDir)
-}
 // TODO: look inside hyperdrive's hypercore, not on the fs, perhaps
 var paths = fs.readdirSync(archivesDir)
 if (!paths) {
