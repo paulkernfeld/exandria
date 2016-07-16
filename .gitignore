@@ -1,5 +1,5 @@
 *.nest/
 client-config.json
-files/
+archives/
 node_modules
 secret.json
