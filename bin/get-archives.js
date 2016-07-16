@@ -25,43 +25,51 @@ var swarms = {}
 var setStream = set.SetStream(nest)
 setStream.once('synced', function () {
   var toGet = {}
-  var archiveName
-  for (archiveName in setStream.archives) {
-    if (minimatch(archiveName, match, {nocase: true})) {
-      toGet[archiveName] = setStream.archives[archiveName]
+
+  var doneWith = function (archiveName) {
+    debug('done with', archiveName)
+    delete toGet[archiveName]
+    if (Object.keys(toGet).length === 0) {
+      process.exit()
     }
   }
 
+  Object.keys(setStream.archives).forEach(function (archiveName) {
+    if (minimatch(archiveName, match, {nocase: true})) {
+      toGet[archiveName] = setStream.archives[archiveName]
+      console.log('Getting archive', archiveName)
+    }
+  })
+
   assert(Object.keys(toGet).length > 0, sprintf('No archives matched "%s"', match))
 
-  for (archiveName in toGet) {
+  Object.keys(toGet).forEach(function (archiveName) {
     var addArchive = toGet[archiveName]
     var keyHex = addArchive.hash.toString('hex')
     var archive = utils.getArchive(drive, archivesDir, addArchive.hash)
     utils.joinSwarm(archive, swarms)
-    archive.list({live: false}, function (err, entries) {
-      assert.ifError(err)
-      console.log(entries)
-      process.exit()
-    })
 
-    archive.get(0, function (err, block) {
-      assert.ifError(err)
-      assert(block)
-      debug('got archive', archiveName)
+    utils.downloadArchive(archive, function (err) {
+      if (err) {
+        console.log('Error downloading archive', keyHex, err)
+        doneWith(archiveName)
+        return
+      }
 
       if (!fs.existsSync('./archives')) {
         fs.mkdirSync('./archives')
       }
       var linkPath = path.join('./archives', archiveName)
-      if (fs.existsSync(linkPath)) {
-        debug('replacing existing archive', linkPath)
+      try {
         fs.unlinkSync(linkPath)
-      }
+      } catch (e) {}
       fs.symlinkSync(path.join('..', archivesDir, keyHex), linkPath)
-      process.exit(0)
+
+      console.log('Got archive', archiveName)
+
+      doneWith(archiveName)
     })
-  }
+  })
 })
 
 setStream.start()
