@@ -68,12 +68,15 @@ if (result.write !== 'y') {
 // of the archive.
 var archivesDir = utils.getArchivesDirPath(argv.db)
 
-var archivePath = path.join(archivesDir, link.toString('hex'))
+var archivePath = path.join(archivesDir, link)
 if (fs.existsSync(archivePath)) {
   console.log('archive path already exists, skipping archive creation')
 } else {
   fs.renameSync(tmpDirPath, archivePath)
 }
+
+// Mark the archive as complete
+nest.db('complete-archives').put(archive.key, true, {sync: true})
 
 // Save the archive's metadata into the main feed
 var toWrite = Buffer.concat([Buffer([2]), messages.AddArchive.encode(addArchive)])

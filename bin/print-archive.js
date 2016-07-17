@@ -14,12 +14,17 @@ var archivesDir = utils.getArchivesDirPath(argv.db)
 
 var archiveKey = Buffer(argv._[0], 'hex')
 
-var archive = utils.getArchive(drive, archivesDir, archiveKey)
-archive.list(function (err, entries) {
+var archive = utils.getArchive(nest, drive, archivesDir, archiveKey)
+utils.waitForArchive(nest, archive, function (err) {
   assert.ifError(err)
-  entries.forEach(function (entry) {
-    console.log('Name:', entry.name)
-    console.log('Size:', entry.length)
-    console.log()
+
+  archive.list(function (err, entries) {
+    assert.ifError(err)
+    entries.forEach(function (entry) {
+      console.log('Name:', entry.name)
+      console.log('Size:', entry.length)
+      console.log()
+    })
+    process.exit(0)
   })
 })

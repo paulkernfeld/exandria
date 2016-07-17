@@ -12,7 +12,7 @@ var setStream = set.SetStream(nest)
 setStream.once('synced', function () {
   for (var archiveName in setStream.archives) {
     debug('archive', archiveName, setStream.archives[archiveName])
-    console.log(archiveName)
+    console.log(archiveName, setStream.archives[archiveName].hash.toString('hex'))
   }
   process.exit(0)
 })

@@ -24,7 +24,7 @@ if (!paths) {
   console.log('Warning: no archives found')
 }
 paths.forEach(function (archivePath) {
-  var archive = utils.getArchive(drive, archivesDir, Buffer(archivePath, 'hex'))
+  var archive = utils.getArchive(nest, drive, archivesDir, Buffer(archivePath, 'hex'))
   utils.joinSwarm(archive, swarms)
 })
 
