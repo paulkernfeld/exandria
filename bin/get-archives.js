@@ -27,7 +27,7 @@ setStream.once('synced', function () {
   var toGet = {}
 
   var doneWith = function (archiveName) {
-    debug('done with', archiveName)
+    debug('done with archive', archiveName)
     delete toGet[archiveName]
     if (Object.keys(toGet).length === 0) {
       process.exit()

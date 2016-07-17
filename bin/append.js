@@ -29,6 +29,8 @@ var metaFeed = core.createFeed({
   secretKey: keypair.secretKey
 })
 
+console.log('Identity:', keypair.publicKey.toString('hex'))
+
 var files = glob.sync(argv.path)
 var archiveName = argv.name || argv.path
 console.log('files:', files)
@@ -68,11 +70,12 @@ var archivesDir = utils.getArchivesDirPath(argv.db)
 
 var archivePath = path.join(archivesDir, link.toString('hex'))
 if (fs.existsSync(archivePath)) {
-  console.log('archive path already exists')
-  process.exit(1)
+  console.log('archive path already exists, skipping archive creation')
+} else {
+  fs.renameSync(tmpDirPath, archivePath)
 }
-fs.renameSync(tmpDirPath, archivePath)
 
 // Save the archive's metadata into the main feed
 var toWrite = Buffer.concat([Buffer([2]), messages.AddArchive.encode(addArchive)])
 deasync(metaFeed.append).call(metaFeed, toWrite)
+console.log('Wrote successfully')
