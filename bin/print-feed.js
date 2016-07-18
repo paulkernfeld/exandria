@@ -12,12 +12,12 @@ var utils = require('../lib/utils')
 var nest = NestLevels(utils.getDbPath(argv.db))
 var core = hypercore(nest.db('hypercore'))
 
-var keypair = utils.getKeypair()
+var feedKey = utils.getKeypair().publicKey
+if (argv._[0]) {
+  feedKey = Buffer(argv._[0], 'hex')
+}
 
-var metaFeed = core.createFeed({
-  key: keypair.publicKey,
-  secretKey: keypair.secretKey
-})
+var metaFeed = core.createFeed({key: feedKey})
 
 var transform = function (message, cb) {
   console.log('Raw:', message.toString('hex'))
@@ -36,5 +36,7 @@ var transform = function (message, cb) {
   console.log()
   cb()
 }
+
+console.log('Printing feed:', feedKey.toString('hex'))
 var mappy = mapStream(transform)
 core.createReadStream(metaFeed, {live: false}).pipe(mappy)
