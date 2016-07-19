@@ -21,6 +21,7 @@
     "url": "git+https://github.com/paulkernfeld/exandria.git"
   },
   "scripts": {
+    "integration": "tape integration-test/*.js",
     "start": "node bin/serve.js",
     "test": "standard && tape test/*.js"
   },
@@ -53,6 +54,7 @@
     "webrtc-swarm": "^2.4.0"
   },
   "devDependencies": {
+    "rimraf": "^2.5.3",
     "standard": "^7.0.1",
     "tape": "^4.6.0"
   }
