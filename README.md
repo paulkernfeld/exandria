@@ -1,5 +1,7 @@
 Exandria is a decentralized file sharing system that includes search.
 
+[![Build Status](https://travis-ci.org/paulkernfeld/exandria.svg)](https://travis-ci.org/paulkernfeld/exandria) [![Gitter](https://badges.gitter.im/paulkernfeld/exandria.svg)](https://gitter.im/paulkernfeld/exandria) [![npm](https://img.shields.io/npm/dt/exandria.svg)](https://www.npmjs.com/package/exandria)
+
 Overview
 ========
 Exandria allows you to search for files and download them. To do this, you don't need an invite or an account; just run the program!
