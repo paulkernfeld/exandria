@@ -14,7 +14,7 @@ var raf = require('random-access-file')
 var temp = require('temp').track()
 // TODO: remove temp dir
 
-var messages = require('../lib/messages')
+var Feed = require('../lib/feed')
 var NestLevels = require('../lib/nest-levels')
 var utils = require('../lib/utils')
 
@@ -24,11 +24,7 @@ var keypair = utils.getKeypair()
 var core = hypercore(nest.db('hypercore'))
 var drive = hyperdrive(nest.db('hyperdrive'))
 
-var metaFeed = core.createFeed({
-  key: keypair.publicKey,
-  secretKey: keypair.secretKey
-})
-
+var feed = Feed.myFeed(core)
 console.log('Identity:', keypair.publicKey.toString('hex'))
 
 var files = glob.sync(argv.path)
@@ -79,6 +75,5 @@ if (fs.existsSync(archivePath)) {
 nest.db('complete-archives').put(archive.key, true, {sync: true})
 
 // Save the archive's metadata into the main feed
-var toWrite = Buffer.concat([Buffer([2]), messages.AddArchive.encode(addArchive)])
-deasync(metaFeed.append).call(metaFeed, toWrite)
+deasync(feed.append).call(feed, addArchive)
 console.log('Wrote successfully')
