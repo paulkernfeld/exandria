@@ -71,9 +71,6 @@ if (fs.existsSync(archivePath)) {
   fs.renameSync(tmpDirPath, archivePath)
 }
 
-// Mark the archive as complete
-nest.db('complete-archives').put(archive.key, true, {sync: true})
-
 // Save the archive's metadata into the main feed
 deasync(feed.append).call(feed, addArchive)
 console.log('Wrote successfully')
