@@ -27,3 +27,14 @@ tape('append and read', function (t) {
     t.end()
   })
 })
+
+tape('myFeed', function (t) {
+  var core = hypercore(memdb())
+
+  var feed1 = Feed.myFeed(core)
+  var feed2 = Feed.myFeed(core)
+  t.ok(feed1)
+  t.ok(feed2)
+  t.same(feed1, feed2)
+  t.end()
+})
