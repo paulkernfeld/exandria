@@ -4,11 +4,11 @@ Exandria is a decentralized file sharing system that includes search.
 
 Overview
 ========
-Exandria allows you to search for files and download them. To do this, you don't need an invite or account.
+Exandria allows you to search for files and download them. To do this, you don't need an invite or account (or bitcoins).
 
 Exandria is not only physically decentralized; the process for determining what goes into the search index is also completely decentralized. No one person has the ability to turn the system off. This is an innovation compared with previous systems.
 
-To write files to the Exandria database, you need to burn bitcoins. This makes spamming prohibitively expensive.
+To write files to the Exandria database, you need to burn (testnet) bitcoins. This makes spamming prohibitively expensive.
 
 Getting started
 ===============
@@ -37,7 +37,7 @@ Running Exandria locally
 For local development:
 
 * Run a local signalhub on port 24144
-* Run a local bitcoind or Bitcoin-Qt
+* Run a local bitcoind or Bitcoin-Qt (in testnet mode)
 
 Design
 ======
@@ -45,11 +45,11 @@ The core of Exandria is the index. This is a collection of file metadata, includ
 
 Identities
 ----------
-An Exandria identity is a cryptographic key pair. The public key of each identity is stored on the Bitcoin blockchain. To register an identity, a user must burn bitcoins.
+An Exandria identity is a cryptographic key pair. The public key of each identity is stored on the Bitcoin testnet blockchain. To register an identity, a user must burn bitcoins.
 
 Exandria uses webcoin, an SPV client. This means that every Exandria client needs to download all blockchain headers (not all blocks!). See [burn-stream](https://github.com/paulkernfeld/burn-stream) for more on how this is implemented.
 
-Currently, Exandria uses the Bitcoin testnet.
+Currently, Exandria uses the Bitcoin testnet. When it's ready, it'll be migrated to use the mainnet.
 
 Feeds
 -----
