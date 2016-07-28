@@ -7,11 +7,11 @@ var argv = require('minimist')(process.argv.slice(2))
 var Writer = require('burn-stream-writer')
 var prompt = require('prompt')
 
-var utils = require('../lib/utils')
+var identities = require('../lib/identities')
 
 assert(argv.t, 'You must pass in the -t argument')
 
-var publicKey = utils.getKeypair().publicKey
+var publicKey = identities.getKeypair().publicKey
 console.log('key:', publicKey.toString('hex'))
 
 var appConfig = JSON.parse(fs.readFileSync('app-config.json'))

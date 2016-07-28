@@ -15,12 +15,13 @@ var temp = require('temp').track()
 // TODO: remove temp dir
 
 var Feed = require('../lib/feed')
+var identities = require('../lib/identities')
 var NestLevels = require('../lib/nest-levels')
 var utils = require('../lib/utils')
 
 var nest = NestLevels(utils.getDbPath(argv.db))
 
-var keypair = utils.getKeypair()
+var keypair = identities.getKeypair()
 var core = hypercore(nest.db('hypercore'))
 var drive = hyperdrive(nest.db('hyperdrive'))
 
