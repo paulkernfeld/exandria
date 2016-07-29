@@ -7,6 +7,7 @@ var hypercore = require('hypercore')
 var hyperdrive = require('hyperdrive')
 var argv = require('minimist')(process.argv.slice(2))
 
+var Archive = require('../lib/archive')
 var NestLevels = require('../lib/nest-levels')
 var utils = require('../lib/utils')
 
@@ -17,15 +18,15 @@ var drive = hyperdrive(nest.db('hyperdrive'))
 
 var swarms = {}
 
-var archivesDir = utils.getArchivesDirPath(argv.db)
+var archivesDir = Archive.getArchivesDirPath(argv.db)
 // TODO: look inside hyperdrive's hypercore, not on the fs, perhaps
 var paths = fs.readdirSync(archivesDir)
 if (!paths) {
   console.log('Warning: no archives found')
 }
 paths.forEach(function (archivePath) {
-  var archive = utils.getArchive(nest, drive, archivesDir, Buffer(archivePath, 'hex'))
-  utils.joinSwarm(archive, swarms)
+  var archive = Archive.getArchive(drive, archivesDir, Buffer(archivePath, 'hex'))
+  utils.joinSwarm(archive.archive, swarms)
 })
 
 core.list(function (err, feedKeys) {

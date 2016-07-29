@@ -1,13 +1,16 @@
 #!/usr/bin/env node
+var assert = require('assert')
+
 var hyperdrive = require('hyperdrive')
 var argv = require('minimist')(process.argv.slice(2))
 
+var Archive = require('../lib/archive')
 var NestLevels = require('../lib/nest-levels')
 var utils = require('../lib/utils')
 
 var nest = NestLevels(utils.getDbPath(argv.db))
 var drive = hyperdrive(nest.db('hyperdrive'))
-var archivesDir = utils.getArchivesDirPath(argv.db)
+var archivesDir = Archive.getArchivesDirPath(argv.db)
 
 var archiveName = argv._[0]
 
@@ -21,17 +24,23 @@ setStream.once('synced', function () {
     process.exit(1)
   }
 
-  var archive = utils.getArchive(nest, drive, archivesDir, archiveObj.hash)
-  utils.joinSwarm(archive, {})
+  var archive = Archive.getArchive(drive, archivesDir, archiveObj.hash)
+  utils.joinSwarm(archive.archive, {})
 
-  utils.downloadArchive(nest, archive, archiveName, archivesDir, function (err) {
-    if (err) {
-      console.log(err)
-      process.exit(1)
-    }
-    console.log('Archive synced')
-    process.exit(0)
-  })
+  if (archiveName) {
+    archive.waitDone(30000, function (err) {
+      assert.ifError(err)
+
+      archive.name(archiveName, './archives', archivesDir, function (err) {
+        if (err) {
+          console.log(err)
+          process.exit(1)
+        }
+        console.log('Archive synced')
+        process.exit(0)
+      })
+    })
+  }
 })
 
 setStream.start()
