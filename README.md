@@ -32,13 +32,6 @@ How to write
 3. Add a new archive using `bin/append`.
 4. Run `bin/serve` to share your local files with the world.
 
-Running Exandria locally
-------------------------
-For local development:
-
-* Run a local signalhub on port 24144
-* Run a local bitcoind or Bitcoin-Qt (in testnet mode)
-
 Design
 ======
 The core of Exandria is the index. This is a collection of file metadata, including names and content hashes. A client can do a text search through the index, and can retrieve any file listed in the index.
