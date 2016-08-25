@@ -31,7 +31,7 @@
     "deasync": "^0.1.7",
     "debug": "^2.2.0",
     "electron-webrtc": "^0.2.4",
-    "glob": "^7.0.5",
+    "glob": "^7.0.6",
     "hypercore": "^4.7.0",
     "hyperdrive": "https://git@github.com/joehand/hyperdrive/tarball/17c51a5c2e39d69e75bc1c28545975d449729395",
     "leveldown": "^1.4.6",
