@@ -4,11 +4,13 @@ Exandria is a decentralized file sharing system that includes search.
 
 Overview
 ========
-Exandria allows you to search for files and download them. To do this, you don't need an invite or account (or bitcoins).
+Exandria is a P2P system that lets you search for files and download them. To do this, you don't need an invite or account (or bitcoins).
 
-Exandria is not only physically decentralized; the process for determining what goes into the search index is also completely decentralized. No one person has the ability to turn the system off. This is an innovation compared with previous systems.
+Exandria is not only physically decentralized; ownership of the search index is also completely decentralized. No one person can to turn the system off. This is new compared with previous systems.
 
-To write files to the Exandria database, you need to burn (testnet) bitcoins. This makes spamming prohibitively expensive.
+To write files to the Exandria database, you need to burn bitcoins (currently testnet Bitcoins). This prevents spamming.
+
+For more, see my [talk at HOPE XI](http://livestream.com/accounts/9198012/hopeconf/videos/131672097) or my [blog post](http://paulkernfeld.com/2016/04/13/exandria.html) on Exandria.
 
 Getting started
 ===============
@@ -38,7 +40,7 @@ The core of Exandria is the index. This is a collection of file metadata, includ
 
 Identities
 ----------
-An Exandria identity is a cryptographic key pair. The public key of each identity is stored on the Bitcoin testnet blockchain. To register an identity, a user must burn bitcoins.
+An Exandria identity is a cryptographic key pair. The public key of each identity is stored on the Bitcoin testnet blockchain. To register an identity, a user must burn bitcoins. To read identities, an Exandria client just reads through the Bitcoin blockchain.
 
 Exandria uses webcoin, an SPV client. This means that every Exandria client needs to download all blockchain headers (not all blocks!). See [burn-stream](https://github.com/paulkernfeld/burn-stream) for more on how this is implemented.
 
@@ -50,7 +52,7 @@ Each identity has an append-only [hypercore](https://github.com/mafintosh/hyperc
 
 This feed can contain the following types of message:
 
-* `AddArchive`: publishes a named hyperdrive archive
+* `AddArchive`: publishe a named hyperdrive archive
 * ...more messages coming soon!
 
 Every Exandria client downloads and replicates every feed. Each feed has its own independent swarm.
@@ -74,7 +76,3 @@ Road Map
 * Web of trust model
 * Anonymity (perhaps Tor?)
 * Scalability improvements
-
-More
-====
-See [this blog post](http://paulkernfeld.com/2016/04/13/exandria.html).
